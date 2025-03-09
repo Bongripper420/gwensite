@@ -1,17 +1,609 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LIZACK</title>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gwen Website</title>
+    <style>
+      :root {
+        --primary-color: #0e0d0d; /* title and contact bars backround color */
+        --secondary-color: #1b1919; /*top buttons background color */
+        --background-light: #131311; /* main background color */
+        --text-color: #ffffff; /* text color*/
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif; /* font */
+        line-height: 1.6;
+        background-color: var(--background-light);
+        color: var(--text-color);
+      }
+
+      .outer-container {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--background-light);
+        height: 100vh;
+      }
+
+      .main-title {
+        background-color: var(--primary-color);
+        color: black; /* title text color */
+        text-align: center;
+        padding: 20px 0;
+        font-size: 2.5em;
+        font-weight: 700;
+        letter-spacing: 5px;
+        text-shadow: -1px -1px 0 rgb(255, 187, 0), 1px -1px 0 rgb(255, 187, 0),
+          -1px 1px 0 rgb(255, 187, 0), 1px 1px 0 rgb(255, 187, 0);
+        width: 100%; /* title text outline*/
+        word-break: break-word;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        padding: 10px;
+        overflow: hidden;
+        flex-grow: 1;
+      }
+
+      .banner {
+        width: 150px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); /* banner shadow color */
+        transition: transform 0.2s ease;
+        border: 2px solid rgba(255, 214, 107, 0.15); /* banner border color */
+      }
+
+      .banner video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scale(1.01); /* banner slightly expands when hovered */
+        transition: transform 0.3s ease;
+      }
+
+      .banner:hover video {
+        transform: scale(1.03); /* banner slightly expands when hovered */
+        filter: brightness(1.1);
+      }
+
+      .content {
+        flex-grow: 1;
+        background-color: rgb(19, 19, 18); /* interior background color */
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); /* interior box shadow color */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .content-topbar {
+        background-color: var(--secondary-color);
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+        height: 70px;
+        border-radius: 8px 8px 0 0;
+        min-height: 90px; /* interior top bar height */
+        flex-wrap: wrap;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        width: 100%;
+        gap: 0;
+        flex-wrap: wrap;
+      }
+
+      .invisible-button {
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        background-color: transparent;
+        color: var(--text-color);
+        border: none;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.3s ease, color 0.3s ease; /* button hover animation settings */
+        text-decoration: none;
+      }
+
+      .invisible-button:hover {
+        /* button animation info */
+        background-color: rgba(143, 127, 66, 0.7);
+        color: white;
+      }
+
+      .dropdown {
+        position: relative;
+        flex: 1;
+        display: grid;
+        width: 100%;
+        height: 100%;
+      }
+
+      .dropdown-content {
+        display: block;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: rgba(43, 43, 43, 0.95);
+        width: 100%;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.08);
+        z-index: 10;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* dropdown animation settings */
+        backdrop-filter: blur(8px);
+        border-radius: 0 0 8px 8px;
+        pointer-events: none;
+      }
+
+      .dropdown:hover .dropdown-content {
+        /* dropdown buttons animation info */
+        max-height: 300px;
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .dropdown-content button {
+        width: 100%;
+        text-align: center;
+        background-color: transparent;
+        color: white;
+        padding: 12px 15px;
+        font-size: 0.9em;
+        font-weight: 500;
+        line-height: 1.5;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s ease, transform 0.3s ease; /* dropdown buttons animation settings */
+      }
+
+      .dropdown:hover .dropdown-content button {
+        /* dropdown buttons animation info */
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: calc(0.05s * var(--index));
+      }
+
+      .dropdown-content button:hover {
+        background-color: var(--background-light);
+      }
+
+      .content-inner {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 40px;
+        height: 100%;
+        overflow: auto;
+      }
+
+      .content-image {
+        grid-column: 2;
+        max-width: 400px; /* middle image size */
+        margin: 0 auto;
+      }
+
+      .content-image img {
+        max-width: 100%;
+        max-height: 80vh;
+        min-height: 400px;
+        display: block;
+        object-fit: cover;
+      }
+
+      .image-text {
+        max-width: 100%;
+        margin: 0;
+        padding: 20px;
+        height: auto;
+        overflow: auto;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .image-text.left-text {
+        grid-column: 1;
+        text-align: right;
+      }
+
+      .image-text.right-text {
+        grid-column: 3;
+        max-width: 50%; /* right text width */
+        font-size: clamp(1rem, 1.5vw, 1.3em);
+        line-height: 1.4;
+        overflow: visible;
+        min-height: 2em;
+      }
+
+      .contact-info {
+        background-color: var(--primary-color);
+        color: white;
+        text-align: center;
+        padding: 15px;
+        font-weight: 300;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .button-container {
+        flex: 1;
+        display: flex;
+        align-items: stretch;
+      }
+
+      .button-container > * {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .contact-text {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        border: none;
+        background-color: transparent;
+        color: var(--text-color);
+        font-size: 1em;
+        font-weight: 300;
+        margin: 0 10px;
+      }
+
+      @media (max-width: 1024px) {
+        .content-inner {
+          grid-template-rows: auto minmax(300px, 1fr) auto;
+          height: calc(100vh - 170px);
+        }
+
+        .image-text {
+          padding: 15px 20px !important;
+        }
+
+        .content-image {
+          min-height: 40vh;
+          max-height: 70vh;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+
+        .banner {
+          width: 100%;
+          height: 150px;
+        }
+
+        .content {
+          max-height: calc(100vh - 220px);
+          display: flex;
+          flex-direction: column;
+          overflow: auto;
+          overscroll-behavior: contain;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .content-inner {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          padding: 20px;
+          overflow-y: auto;
+          align-items: center;
+          position: relative;
+          width: 100%;
+          overscroll-behavior: contain;
+        }
+
+        .image-text {
+          order: 2;
+          padding: 20px !important;
+          text-align: center !important;
+          width: 100%;
+          position: relative;
+          z-index: 1;
+          background-color: var(--background-light);
+          overflow-y: visible;
+          max-height: none;
+        }
+
+        .content-image {
+          order: 1;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 20px;
+          max-height: 50vh;
+          overflow: visible;
+        }
+
+        .content-image img {
+          max-height: 50vh;
+          object-fit: contain;
+          width: auto;
+          max-width: 100%;
+          margin: 0 auto;
+        }
+
+        .right-text {
+          order: 3;
+          font-size: 1rem !important;
+          line-height: 1.4;
+          padding: 20px !important;
+          overflow-y: visible;
+        }
+      }
+    </style>
   </head>
   <body>
-    <main>
-        <h1>LIZACK</h1>  
-    </main>
-    <script src="index.js"></script>
+    <div class="outer-container">
+      <div class="main-title">GWEN TITLE</div>
+      <!-- Set title -->
+
+      <div class="container">
+        <div class="banner">
+          <!-- Left video banner -->
+          <video
+            src="https://cdn.discordapp.com/attachments/1344193541164896256/1345642063336706058/63cae7ed0c42499bb03b43c2b7b65985.mov?ex=67cddc14&is=67cc8a94&hm=46801dd9305bc15512a57596106851eac0729eabf6efaaa71045021e3f51231d&"
+            autoplay
+            loop
+            muted
+          ></video>
+        </div>
+
+        <div class="content">
+          <div class="content-topbar">
+            <div class="topbar-left">
+              <div class="button-container">
+                <div class="dropdown">
+                  <a class="invisible-button dropdown-btn">Change Image</a>
+                  <div class="dropdown-content">
+                    <!-- Dropdown buttons,   "changeimage(#)">Buttontext<  -->
+                    <button onclick="changeImage('1')">1</button>
+                    <button onclick="changeImage('2')">2</button>
+                    <button onclick="changeImage('3')">3</button>
+                    <button onclick="changeImage('4')">4</button>
+                    <button onclick="changeImage('5')">5</button>
+                    <button onclick="changeImage('6')">6</button>
+                  </div>
+                </div>
+              </div>
+              <div class="button-container">
+                <!-- top bar button names -->
+                <a onclick="resetContent()" class="invisible-button"
+                  >Default Content</a
+                >
+              </div>
+              <div class="button-container">
+                <a onclick="alternateContent()" class="invisible-button"
+                  >Alternate Content</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="content-inner">
+            <div class="image-text left-text"></div>
+
+            <div class="content-image">
+              <!-- default image -->
+              <img
+                id="mainImage"
+                src="https://cdn.discordapp.com/attachments/1227789298011475998/1347781101690818622/01addbd599bda4bd851d916219ca8773.jpg?ex=67cd1277&is=67cbc0f7&hm=58dddc77894357b9e29baffd48f7f05d5f64ee6775246e6c6603ca465d2b3239&"
+                alt="Placeholder Image"
+              />
+            </div>
+            <div class="image-text right-text">
+              <!-- main text -->
+              <p>
+                nik — Today at 10:55 PM idk why it says that i didnt Image log
+                is stupid morgan — Today at 10:56 PM pent up pup ItGetsBetter —
+                Today at 10:56 PM @alya Was there others you wanted Removed
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="banner">
+          <!-- right video banner -->
+          <video
+            src="https://cdn.discordapp.com/attachments/1227789298011475998/1347780876502827070/bleedTikTokW6z2DK4QGVLjv_2.mp4?ex=67cd1241&is=67cbc0c1&hm=2481e3f18086060e7038a06ff21a9e20eeae0607e0d5bace904e2e748599baab&"
+            autoplay
+            loop
+            muted
+          ></video>
+        </div>
+      </div>
+
+      <div class="contact-info">
+        <!-- Contact info -->
+        <span class="contact-text">Contact Info 1</span>
+        <span class="contact-text">Contact Info 2</span>
+        <span class="contact-text">Contact Info 3</span>
+        <span class="contact-text">Contact Info 4</span>
+        <span class="contact-text">Contact Info 5</span>
+      </div>
+    </div>
+
+    <script>
+      let selectedImageSrc = null;
+
+      function debounce(func, timeout = 50) {
+        let timer;
+        return (...args) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            func.apply(this, args);
+          }, timeout);
+        };
+      }
+
+      const debouncedAdjustFontSize = debounce(() => {
+        try {
+          adjustFontSize();
+        } catch (e) {
+          console.error("resize observer error:", e);
+        }
+      });
+
+      window.addEventListener("resize", debouncedAdjustFontSize);
+      const observer = new ResizeObserver(debouncedAdjustFontSize);
+      observer.observe(document.querySelector(".right-text"));
+
+      function adjustFontSize() {
+        const textContainer = document.querySelector(".right-text");
+        if (!textContainer) return;
+
+        const container = textContainer.parentElement;
+
+        textContainer.style.fontSize = "";
+        const initialSize = parseFloat(
+          getComputedStyle(textContainer).fontSize
+        );
+
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        const minFontSize = isMobile ? 16 : 14;
+
+        try {
+          if (isMobile) {
+            textContainer.style.fontSize = `${Math.max(
+              minFontSize,
+              initialSize
+            )}px`;
+          }
+        } catch (e) {
+          console.log("resuize calc error:", e);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", adjustFontSize);
+
+      function initDropdownButtons() {
+        const buttons = document.querySelectorAll(".dropdown-content button");
+        buttons.forEach((button, index) => {
+          button.style.setProperty("--index", index);
+          button.addEventListener("mouseenter", (e) => {
+            if (!e.target.closest(".dropdown").matches(":hover")) {
+              e.preventDefault();
+            }
+          });
+        });
+      }
+
+      // Image options here
+
+      function changeImage(type) {
+        const imageMap = {
+          1: "https://cdn.discordapp.com/attachments/1227789298011475998/1347781100830986240/7c2e555844675bb69ac3ea9af75568bf.jpg?ex=67ce63f7&is=67cd1277&hm=c23fb5ebbf25cb3596440f81bc693959c69047b2d33886e3953123a87b6a76c5&",
+          2: "https://cdn.discordapp.com/attachments/1227789298011475998/1347781101137035264/0e527b9f18da8992a782c91abd794583.jpg?ex=67ce63f7&is=67cd1277&hm=5bbc55335d08f1d89946680e5c9ebec79223a23bca4fa35154ddae23bf9d128f&",
+          3: "https://cdn.discordapp.com/attachments/1227789298011475998/1347781101413990453/b3eb70ee00971f372291ef2809537903.jpg?ex=67ce63f7&is=67cd1277&hm=b0fca4291cb12c6675c438c00887f16e4c10664e0e848daf84f333926b46f8d4&",
+          4: "https://cdn.discordapp.com/attachments/1227789298011475998/1348170862561464371/IMG_1216.jpg?ex=67ce7d75&is=67cd2bf5&hm=42aab4c52bd2ef7e1f14260a8789c9a6c5c959391de5eb17e78a7652b3556a49&",
+          5: "https://cdn.discordapp.com/attachments/1227789298011475998/1348170863727611975/IMG_0924.jpg?ex=67ce7d75&is=67cd2bf5&hm=9ebdcac3741086f0288d0f8b54e90ec6cd3aaba2b32bc9ede1af9bc0f1aa1746&",
+          6: "https://cdn.discordapp.com/attachments/1227789298011475998/1343488477395947551/1339695442564350165remix-1740383012688.png?ex=67cdef65&is=67cc9de5&hm=55237fa7cabacac3e9386963a1db66bebe61c3e0b0aeb55fc050ff6af9c46a4c&",
+        };
+
+        const mainImage = document.getElementById("mainImage");
+        if (mainImage) {
+          selectedImageSrc = imageMap[type];
+          mainImage.src = selectedImageSrc;
+          adjustFontSize();
+        }
+      }
+
+      const defaultContent = {
+        leftText: "",
+        rightText: "",
+        imageSrc: "",
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const leftText = document.querySelector(".image-text.left-text");
+        const rightText = document.querySelector(".image-text.right-text");
+        const mainImage = document.getElementById("mainImage");
+
+        if (leftText) defaultContent.leftText = leftText.innerHTML;
+        if (rightText) defaultContent.rightText = rightText.innerHTML;
+        if (mainImage) {
+          defaultContent.imageSrc = mainImage.src;
+          selectedImageSrc = mainImage.src;
+        }
+      });
+
+      function resetContent() {
+        const contentInner = document.querySelector(".content-inner");
+        if (!contentInner) return;
+
+        contentInner.innerHTML = `
+          <div class="image-text left-text">${defaultContent.leftText}</div>
+          <div class="content-image">
+            <img id="mainImage" src="${
+              selectedImageSrc || defaultContent.imageSrc
+            }" alt="Placeholder Image" />
+          </div>
+          <div class="image-text right-text">${defaultContent.rightText}</div>
+        `;
+
+        adjustFontSize();
+      }
+
+      function alternateContent() {
+        const contentInner = document.querySelector(".content-inner");
+        if (contentInner) {
+          // PUT ALTERNATE CONTENT SHIT HERE
+          contentInner.innerHTML = `
+            <div class="image-text right-text" style="text-align: center; grid-column: 1 / -1; max-width: 100%;">
+              <h1>Alternate Content</h1>
+              <p>meow.</p>
+            </div>
+          `;
+          adjustFontSize();
+        }
+      }
+    </script>
   </body>
 </html>
